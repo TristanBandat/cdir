@@ -1,0 +1,11 @@
+TODO
+----
+
+Into Version 1.0.2:
+# + cdir is not fixed on 0 as starting point 
+Status: done
+
+Into Version 1.0.3:
+# + recognize 0s between the underscore and the number
+# + ignore all underscores prior to the last
+Status: done
