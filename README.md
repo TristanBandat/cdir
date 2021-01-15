@@ -19,7 +19,7 @@ Of course the function has a help page (-h or -? or --help or help).
 
 ## Other information:
 
-1) The project is written in Python 3.7.
+1) The project is written in Python 3.8.
 2) The project is hosted on Github.
 4) The function only works with numbers that are after the folder name and seperated 
-    with a _. Aditional zeros after the underscore are getting detected, so don't worry.
+    with a underscore. Aditional zeros after the underscore are getting detected, so don't worry.
