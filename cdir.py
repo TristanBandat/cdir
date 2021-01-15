@@ -120,7 +120,7 @@ def main():
     placeholder_count = number_length - highest_number_digit_count
     # create the new folder name
     new_foldername = foldername + '_' + ('0' * placeholder_count) + str((highest_number + 1))
-    print(f"Creating directory {new_foldername}...")
+    print(f"Creating directory {new_foldername}")
     # create the new folder
     os.makedirs(new_foldername)
     print("done.")
