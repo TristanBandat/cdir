@@ -11,6 +11,10 @@ def get_foldername(folder_names):
     :return: foldername
     """
     match_list_len = []
+    # check if there are existing folders
+    if len(folder_names) == 0:
+        print("No folder(s) found.")
+        exit()
     # go through all the folder names
     for pattern in folder_names:
         # finding all redundant folder names
