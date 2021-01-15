@@ -17,9 +17,9 @@ that name (if they exist) and creates a new directory with the given name and th
 
 Of course the function should have a help page (-h or -? or --help or help).
 
-Other information:
+## Other information:
 
-# 1) The project is written in C (C99). Stoped because of the high complexity for a script.
+1) The project is written in C (C99). Stoped because of the high complexity for a script.
 1) The project is written in Python 3.7.
 2) The finished file will be copied in the .bin/ folder aka project.
 3) There is a version on BCB as well as on the git server.
