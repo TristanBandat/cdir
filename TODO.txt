@@ -9,3 +9,8 @@ Into Version 1.0.3:
 # + recognize 0s between the underscore and the number
 # + ignore all underscores prior to the last
 Status: done
+
+Into Version 1.0.4:
+# + Printing dialog when no folder exists
++ Increase performance
+Status: edit
