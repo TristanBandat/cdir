@@ -63,12 +63,13 @@ def main():
     cwd = os.getcwd()
     # get the content of the cwd
     folder_content = os.listdir(cwd)
-    folders = []
     # filter only the directory's
+    folders = []
     [folders.append(current_object) for current_object in folder_content if os.path.isdir(current_object)]
+    # folder names and corresponding numbers
     numbers = []
     folder_names = []
-    # list with digit counts of each given foldername
+    # list with digit counts of each given folder name
     numbers_num_digits = list()
     # go through all folders
     for element in folders:
@@ -89,6 +90,7 @@ def main():
             except ValueError:
                 print(f"Was not able to convert string to int of folder '{element}'")
                 continue
+    # name of the new folder
     foldername = ""
     # if no additional argument was given
     if command_line_args.__len__() == 1 or command_line_args[1] == '':
@@ -118,10 +120,10 @@ def main():
     placeholder_count = number_length - highest_number_digit_count
     # create the new folder name
     new_foldername = foldername + '_' + ('0' * placeholder_count) + str((highest_number + 1))
-    print(f"Creating directory {new_foldername}")
+    print(f"Creating directory {new_foldername}...")
     # create the new folder
     os.makedirs(new_foldername)
-    pass
+    print("done.")
 
 
 if __name__ == '__main__':
