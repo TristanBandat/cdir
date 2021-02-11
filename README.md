@@ -23,4 +23,4 @@ Of course the function has a help page (-h or -? or --help or help).
 2) The project is hosted on Github.
 4) The function only works with numbers that are after the folder name and seperated 
     with a underscore. Aditional zeros after the underscore are getting detected, so don't worry.
-5) The C implementation is currently under development. When it is working it will be stated here.
+5) There exists a C implementation for power users. (Or you don't like Python)
