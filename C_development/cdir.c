@@ -64,12 +64,10 @@ int main(int argc, char **argv) {
     // get all directories from cwd
     while ((de = readdir(dr)) != NULL) {
         if (de->d_type == DT_DIR) {
-            // printf("%s\n", de->d_name);
             if ((strcmp(de->d_name, ignored_dirs[0]) == 0) ||
                 (strcmp(de->d_name, ignored_dirs[1]) == 0)) {
                 continue;
             }
-
             // save directory pointer in array
             dirs[dirs_index] = *de;
             // increment counter
@@ -92,9 +90,11 @@ int main(int argc, char **argv) {
         return 0;
     }
 
+    // get all considered directories
     considered_directories_index = get_directories(considered_directories, num_dirs, dirs);
-
+    // TESTING: print number of considered directories
     printf("Number of considered directories: %i", considered_directories_index);
+
     // Check command line args for given directory name
     // TODO: append here
 
