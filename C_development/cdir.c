@@ -102,6 +102,11 @@ int main(int argc, char **argv) {
     // get all considered directories
     considered_directories_index = get_directories(considered_directories, num_dirs, dirs);
 
+    if (considered_directories_index == 0) {
+        printf("No folder(s) found.\n");
+        return 0;
+    }
+
     // Check command line args for given directory name
     // TODO: append here
     if (optind >= argc) {
