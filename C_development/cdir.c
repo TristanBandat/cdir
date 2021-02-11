@@ -5,6 +5,7 @@
 #include <unistd.h>
 #include <dirent.h>
 #include <string.h>
+#include <sys/stat.h>
 
 #define LEN_FLAG_ARR 1              // number of flags
 #define LEN_ARGS_ARR LEN_FLAG_ARR   // use this name for all use cases where you don't refer directly to the flag array
@@ -17,8 +18,9 @@
 // structure for directories with correct formatting
 struct directory {
     char name[MAX_DIR_NAME_LEN];
-    int number;
+    int occurrence;
     int num_zeros;
+    int highest_number;
 };
 
 int set_flags(int, char**, int*, const char*);
@@ -26,6 +28,7 @@ void update_flag(char flag, int* flag_arr, const char* args_arr);
 void get_cwd(char *cwd_arr);
 int get_directories(struct directory*, int, struct dirent*);
 void print_help();
+void create_dir(struct directory, char*);
 
 int main(int argc, char **argv) {
     // array with all flags
@@ -50,6 +53,12 @@ int main(int argc, char **argv) {
     struct directory considered_directories[MAX_DIR_NUMBER];
     // index of the next free position in 'considered_directories'
     int considered_directories_index = 0;
+    // index of the considered directory with the highest occurrence
+    int con_dir_occ_index = 0;
+    // there exists a directory with given name from args
+    bool dir_found = false;
+    // directory name given as arg
+    char given_dir_name[MAX_DIR_NAME_LEN];
 
     // get the current working directory
     get_cwd(cwd_arr);
@@ -92,14 +101,49 @@ int main(int argc, char **argv) {
 
     // get all considered directories
     considered_directories_index = get_directories(considered_directories, num_dirs, dirs);
-    // TESTING: print number of considered directories
-    printf("Number of considered directories: %i", considered_directories_index);
 
     // Check command line args for given directory name
     // TODO: append here
+    if (optind >= argc) {
+        // no directory name given
+        // get the directory with the highest occurrence
+        for (int i = 0; i < considered_directories_index; i++) {
+            if (considered_directories[con_dir_occ_index].occurrence < considered_directories[i].occurrence) {
+                con_dir_occ_index = i;
+            }
+        }
+        // create additional directory with given parameters
+        create_dir(considered_directories[con_dir_occ_index], cwd_arr);
+    } else {
+        // directory name given as arg
+        // append an underscore to the given name
+        strcpy(given_dir_name, argv[optind]);
+        strcat(given_dir_name, "_");
+
+        // check for already existing directories
+        for (int i = 0; i < considered_directories_index; i++) {
+            if (strcmp(considered_directories[i].name, given_dir_name) == 0) {
+                create_dir(considered_directories[i], cwd_arr);
+                dir_found = true;
+                break;
+            }
+        }
+
+        // if there was no directory found -> create a new one
+        if (!dir_found) {
+            strcpy(considered_directories[considered_directories_index].name, given_dir_name);
+            considered_directories[considered_directories_index].occurrence = 1;
+            considered_directories[considered_directories_index].num_zeros = 0;
+            considered_directories[considered_directories_index].highest_number = -1;
+            considered_directories_index++;
+            create_dir(considered_directories[considered_directories_index-1], cwd_arr);
+        }
+    }
 
     // close directory
     closedir(dr);
+
+    printf("done.\n");
     return 0;
 }
 
@@ -256,7 +300,9 @@ int get_directories(struct directory *considered_directories, int num_dirs, stru
                 // check if the name already exists
                 if (strcmp(considered_directories[j].name, name_sequence) == 0 &&
                     (num_zeros_number_sequence == considered_directories[j].num_zeros)) {
-                    considered_directories[j].number++;
+                    considered_directories[j].occurrence++;
+                    if (number_sequence_int > considered_directories[j].highest_number)
+                        considered_directories[j].highest_number = number_sequence_int;
                     name_seq_exists = true;
                     break;
                 }
@@ -264,8 +310,9 @@ int get_directories(struct directory *considered_directories, int num_dirs, stru
             // if the directory does not already exist -> add it to the array
             if (!name_seq_exists) {
                 strcpy(considered_directories[considered_directories_index].name, name_sequence);
-                considered_directories[considered_directories_index].number = 1;
+                considered_directories[considered_directories_index].occurrence = 1;
                 considered_directories[considered_directories_index].num_zeros = num_zeros_number_sequence;
+                considered_directories[considered_directories_index].highest_number = number_sequence_int;
                 considered_directories_index++;
             }
             name_seq_exists = false;
@@ -303,4 +350,31 @@ void print_help()
     printf("0 as the highest number and proceed like normal.\n\n");
 
     printf("To get this help statement displayed use the argument '-h'.\n\n\n");
+}
+
+void create_dir(struct directory dir, char *cwd_arr)
+/*
+ * Puts directory name and path together and creates the directory.
+ * If an error while creating occurs, the program exits with status -1.
+ */
+{
+    char path_dir_name[MAX_DIR_NAME_LEN] = {};
+    char str[MAX_STR_NUM_LEN] = {};
+
+    // put the directory name together
+    strcpy(path_dir_name, cwd_arr);
+    strcat(path_dir_name, "/");
+    strcat(path_dir_name, dir.name);
+    for (int i = 0; i < dir.num_zeros; i++)
+        strcat(path_dir_name, "0");
+    sprintf(str, "%i", dir.highest_number+1);
+    strcat(path_dir_name, str);
+
+    // print the finished directory path + name
+    printf("Creating directory %s\n", path_dir_name);
+    // create directory
+    if (mkdir(path_dir_name, 0700) == -1) {
+        printf("ERROR while creating directory.\n\n");
+        exit(-1);
+    }
 }
