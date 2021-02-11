@@ -6,7 +6,7 @@
 #include <dirent.h>
 #include <string.h>
 
-#define LEN_FLAG_ARR 2              // number of flags
+#define LEN_FLAG_ARR 1              // number of flags
 #define LEN_ARGS_ARR LEN_FLAG_ARR   // use this name for all use cases where you don't refer directly to the flag array
 #define MAX_PATH_LEN 1024
 #define MAX_DIR_NUMBER 512
@@ -25,12 +25,13 @@ int set_flags(int, char**, int*, const char*);
 void update_flag(char flag, int* flag_arr, const char* args_arr);
 void get_cwd(char *cwd_arr);
 int get_directories(struct directory*, int, struct dirent*);
+void print_help();
 
 int main(int argc, char **argv) {
     // array with all flags
     int flag_arr[LEN_FLAG_ARR] = {0};
     // array with all arguments
-    const char args_arr[LEN_ARGS_ARR] = {'b', 's'};
+    const char args_arr[LEN_ARGS_ARR] = {'h'};
     // array for storing the current working directory (cwd)
     char cwd_arr[MAX_PATH_LEN];
     // variable to go through all directories and files in cwd
@@ -85,6 +86,12 @@ int main(int argc, char **argv) {
         return -1;
     }
 
+    // check if the user wants help
+    if (flag_arr[0]) {
+        print_help();
+        return 0;
+    }
+
     considered_directories_index = get_directories(considered_directories, num_dirs, dirs);
 
     printf("Number of considered directories: %i", considered_directories_index);
@@ -117,22 +124,22 @@ int set_flags(int argc, char **argv, int* flag_arr, const char* args_arr)
 
     // go through the args
     while ((c = getopt (argc, argv, all_args)) != -1) {
-        switch (c) {
-            case 'b':
-            case 's':
+        if (c == '?') {
+            // an unknown option/character appeared
+            if (isprint (optopt))
+                fprintf(stderr, "Unknown option `-%c'.\n", optopt);
+            else
+                fprintf(stderr,
+                        "Unknown option character `\\x%x'.\n", optopt);
+            return 1;
+        } else {
+            if (c == args_arr[0]) {
                 // updates the flags array at the position of given flag
                 update_flag((char)c, flag_arr, args_arr);
-                break;
-            case '?':
-                // an unknown option/character appeared
-                if (isprint (optopt))
-                    fprintf(stderr, "Unknown option `-%c'.\n", optopt);
-                else
-                    fprintf(stderr,
-                            "Unknown option character `\\x%x'.\n", optopt);
+            } else {
+                // unknown argument
                 return 1;
-            default:
-                return 1;
+            }
         }
     }
 
@@ -273,4 +280,27 @@ int get_directories(struct directory *considered_directories, int num_dirs, stru
     }
 
     return considered_directories_index;
+}
+
+void print_help()
+/*
+ * Display the help message.
+ */
+{
+    printf("HELP\n----\n");
+    printf("cdir [argument]\n\n");
+
+    printf("When you type only the function name the program will search for a folder structure\n");
+    printf("that looks like [folder_name]_[number]. If there are more than one available it will\n");
+    printf("choose the one which appears the most. Then the program looks for the highest number\n");
+    printf("of the folder structure, increments it by 1 and creates "
+           "a new directory with the\nnew folder name.\n\n");
+
+    printf("If you want to choose the folder name, simply type in the preferred name as\n");
+    printf("an argument. The program will search for the highest number in the folder structure with\n");
+    printf("that keyword, increments it by 1 and creates a new directory with the new folder name.\n");
+    printf("If there exists no directory in the current working directory, the program will start with\n");
+    printf("0 as the highest number and proceed like normal.\n\n");
+
+    printf("To get this help statement displayed use the argument '-h'.\n\n\n");
 }
