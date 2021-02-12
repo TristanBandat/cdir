@@ -13,3 +13,11 @@ Status: done
 Into Version 1.0.4:
 # + Printing dialog when no folder exists
 Status: done
+
+Into Version 1.0.5:
++ Display cdir version (Python)
++ Display cdir version (C)
++ Remove uneccessary int variable (C) - as mentioned in issues
++ Add comments (Python)
++ Add comments (C)
+Status: -
