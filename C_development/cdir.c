@@ -103,13 +103,14 @@ int main(int argc, char **argv) {
     considered_directories_index = get_directories(considered_directories, num_dirs, dirs);
 
     // no directory or arg found
-    if ((considered_directories_index == 0) && (optind >= argc)) {
+    if ((considered_directories_index == 0) &&
+    ((optind >= argc) || (strcmp(argv[optind], "") == 0))) {
         printf("No folder(s) found.\n");
         return 0;
     }
 
     // Check command line args for given directory name
-    if (optind >= argc) {
+    if ((optind >= argc) || (strcmp(argv[optind], "") == 0)) {
         // no directory name given
         // get the directory with the highest occurrence
         for (int i = 0; i < considered_directories_index; i++) {
