@@ -102,7 +102,8 @@ int main(int argc, char **argv) {
     // get all considered directories
     considered_directories_index = get_directories(considered_directories, num_dirs, dirs);
 
-    if (considered_directories_index == 0) {
+    // no directory or arg found
+    if ((considered_directories_index == 0) && (optind >= argc)) {
         printf("No folder(s) found.\n");
         return 0;
     }
