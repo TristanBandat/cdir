@@ -16,6 +16,7 @@ that name (if they exist) and creates a new directory with the given name and th
             ~/Folder/% cdir Exercise
 
 Of course the function has a help page (-h or -? or --help or help).
+In the C Version only '-h' displayes the help page.
 
 ## Other information:
 
