@@ -109,7 +109,6 @@ int main(int argc, char **argv) {
     }
 
     // Check command line args for given directory name
-    // TODO: append here
     if (optind >= argc) {
         // no directory name given
         // get the directory with the highest occurrence
