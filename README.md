@@ -24,7 +24,7 @@
 [![Stargazers][stars-shield]][stars-url]
 [![Issues][issues-shield]][issues-url]
 [![MIT License][license-shield]][license-url]
-[![LinkedIn][linkedin-shield]][linkedin-url]
+<!-- [![LinkedIn][linkedin-shield]][linkedin-url] -->
 
 
 
@@ -239,15 +239,15 @@ Project Link: [https://github.com/TristanBandat/cdir](https://github.com/Tristan
 
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
-[contributors-shield]: https://img.shields.io/github/contributors/TristanBandat/repo.svg?style=for-the-badge
-[contributors-url]: https://github.com/TristanBandat/repo/graphs/contributors
-[forks-shield]: https://img.shields.io/github/forks/TristanBandat/repo.svg?style=for-the-badge
-[forks-url]: https://github.com/TristanBandat/repo/network/members
-[stars-shield]: https://img.shields.io/github/stars/TristanBandat/repo.svg?style=for-the-badge
-[stars-url]: https://github.com/TristanBandat/repo/stargazers
-[issues-shield]: https://img.shields.io/github/issues/TristanBandat/repo.svg?style=for-the-badge
-[issues-url]: https://github.com/TristanBandat/repo/issues
-[license-shield]: https://img.shields.io/github/license/TristanBandat/repo.svg?style=for-the-badge
-[license-url]: https://github.com/TristanBandat/repo/blob/master/LICENSE.txt
-[linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
-[linkedin-url]: https://linkedin.com/in/TristanBandat
+[contributors-shield]: https://img.shields.io/github/contributors/TristanBandat/cdir.svg?style=for-the-badge
+[contributors-url]: https://github.com/TristanBandat/cdir/graphs/contributors
+[forks-shield]: https://img.shields.io/github/forks/TristanBandat/cdir.svg?style=for-the-badge
+[forks-url]: https://github.com/TristanBandat/cdir/network/members
+[stars-shield]: https://img.shields.io/github/stars/TristanBandat/cdir.svg?style=for-the-badge
+[stars-url]: https://github.com/TristanBandat/cdir/stargazers
+[issues-shield]: https://img.shields.io/github/issues/TristanBandat/cdir.svg?style=for-the-badge
+[issues-url]: https://github.com/TristanBandat/cdir/issues
+[license-shield]: https://img.shields.io/github/license/TristanBandat/cdir.svg?style=for-the-badge
+[license-url]: https://github.com/TristanBandat/cdir/blob/master/LICENSE.txt
+<!-- [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
+[linkedin-url]: https://linkedin.com/in/TristanBandat -->
