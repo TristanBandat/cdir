@@ -6,7 +6,7 @@ Shell script for creating new folders with consecutive numbering.
 The goal of this project is to create a function that makes folder creating much faster.
 The function detects on it's own if there is an existing folder structure 
 (FOLDERNAME_X where X is a number) and creates a folder with the correct folder name (FOLDERNAME_X+1).
-This works with only the function call in the corisponding folder:
+This works with only the function call in the corresponding folder:
 
             ~/Folder/% cdir
 
