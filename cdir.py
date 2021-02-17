@@ -2,6 +2,9 @@ import os
 import re
 import sys
 
+# current version of the project
+VERSION = '1.0.4'
+
 
 def get_foldername(folder_names):
     """
@@ -102,6 +105,10 @@ def main():
                 command_line_args[1] == '-?' or \
                 command_line_args[1] == '--help':
             help_text()
+            exit(0)
+        elif command_line_args[1] in ['--version', '-v', '-V']:
+            # display current version
+            print('CDIR Version {}\n'.format(VERSION))
             exit(0)
         else:
             foldername = command_line_args[1]
