@@ -7,7 +7,8 @@
 #include <string.h>
 #include <sys/stat.h>
 
-#define LEN_FLAG_ARR 1              // number of flags
+#define VERSION "1.0.4"             // current version of the project
+#define LEN_FLAG_ARR 3              // number of flags
 #define LEN_ARGS_ARR LEN_FLAG_ARR   // use this name for all use cases where you don't refer directly to the flag array
 #define MAX_PATH_LEN 1024
 #define MAX_DIR_NUMBER 512
@@ -24,7 +25,7 @@ struct directory {
 };
 
 int set_flags(int, char**, int*, const char*);
-void update_flag(char flag, int* flag_arr, const char* args_arr);
+int update_flag(char flag, int* flag_arr, const char* args_arr);
 void get_cwd(char *cwd_arr);
 int get_directories(struct directory*, int, struct dirent*);
 void print_help();
@@ -32,9 +33,9 @@ void create_dir(struct directory, char*);
 
 int main(int argc, char **argv) {
     // array with all flags
-    int flag_arr[LEN_FLAG_ARR] = {0};
+    int flag_arr[LEN_FLAG_ARR] = {};
     // array with all arguments
-    const char args_arr[LEN_ARGS_ARR] = {'h'};
+    const char args_arr[LEN_ARGS_ARR] = {'h', 'v', 'V'};
     // array for storing the current working directory (cwd)
     char cwd_arr[MAX_PATH_LEN];
     // variable to go through all directories and files in cwd
@@ -93,9 +94,12 @@ int main(int argc, char **argv) {
         return -1;
     }
 
-    // check if the user wants help
-    if (flag_arr[0]) {
+    // check for flags
+    if (flag_arr[0]) {                              // check if the user wants help
         print_help();
+        return 0;
+    } else if (flag_arr[1] || flag_arr[2]) {        // check for version number
+        printf("CDIR Version %s\n\n", VERSION);
         return 0;
     }
 
@@ -183,10 +187,8 @@ int set_flags(int argc, char **argv, int* flag_arr, const char* args_arr)
                         "Unknown option character `\\x%x'.\n", optopt);
             return 1;
         } else {
-            if (c == args_arr[0]) {
-                // updates the flags array at the position of given flag
-                update_flag((char)c, flag_arr, args_arr);
-            } else {
+            // updates the flags array at the position of given flag
+            if (update_flag((char) c, flag_arr, args_arr) == 1) {
                 // unknown argument
                 return 1;
             }
@@ -197,19 +199,25 @@ int set_flags(int argc, char **argv, int* flag_arr, const char* args_arr)
     return 0;
 }
 
-void update_flag(char flag, int* flag_arr, const char* args_arr)
+int update_flag(char flag, int* flag_arr, const char* args_arr)
 /*
  * This function updates the flag given by the variable 'flag'.
  * It takes one flag at a time and updates the state if the flag is defined in
  * the arguments array 'args_arr'.
  * The function runs through the possible args and if the flag is found, it
  * will set the value at the corresponding index to 1.
+ * After the flag was set, it will terminate.
  */
 {
     for (int i = 0; i < LEN_ARGS_ARR; i++) {
-        if (flag == *(args_arr + i))
+        if (flag == *(args_arr + i)) {
+            // flag found
             *(flag_arr + i) = 1;
+            return 0;
+        }
     }
+    // flag not found
+    return 1;
 }
 
 void get_cwd(char *cwd_arr)
