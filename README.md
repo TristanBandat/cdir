@@ -190,8 +190,6 @@ Get the current version of CDIR:<br>
     <li>-V</li>
   </ul>
 
-_For more examples, please refer to the [Documentation](https://example.com)._
-
 
 
 <!-- ROADMAP -->
