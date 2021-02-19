@@ -15,9 +15,33 @@ Into Version 1.0.4:
 Status: done
 
 Into Version 1.0.5:
-+ Display cdir version (Python)
-+ Display cdir version (C)
-+ Remove uneccessary int variable (C) - as mentioned in issues
++ Display CDIR version (Python)
++ Display CDIR version (C)
++ Remove unnecessary int variable (C)
+    Remove counter when directories are listed
 + Add comments (Python)
 + Add comments (C)
+Status: dev
+
+Into Version 1.1.0:
++ (Optimizations) (C)
++ Manual argument handling (C)
+    Therefore string args will be possible
++ Code Cleanup (Python)
+FEATURES:
++ Argument [Number]
+    A Number can be added to args which tells the program
+    how many directories should be made.
+    e.g. cdir test 10
 Status: -
+
+
+
+
+
+ADDITIONAL FEATURES:
++Argument -s
+    CDIR should add numbering at the beginning.
+    Will be interesting with argument -f.
++ Argument '-f FILE'
+    A file can be used for multiple directory creation and configuration
