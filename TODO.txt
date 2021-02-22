@@ -5,34 +5,46 @@ Into Version 1.0.2:
 # + cdir is not fixed on 0 as starting point 
 Status: done
 
+
 Into Version 1.0.3:
 # + recognize 0s between the underscore and the number
 # + ignore all underscores prior to the last
 Status: done
 
+
 Into Version 1.0.4:
 # + Printing dialog when no folder exists
 Status: done
 
+
 Into Version 1.0.5:
-+ Display CDIR version (Python)
-+ Display CDIR version (C)
+# + Display CDIR version (Python)
+# + Display CDIR version (C)
 + Remove unnecessary int variable (C)
     Remove counter when directories are listed
 + Add comments (Python)
 + Add comments (C)
 Status: dev
 
+
 Into Version 1.1.0:
 + (Optimizations) (C)
 + Manual argument handling (C)
     Therefore string args will be possible
 + Code Cleanup (Python)
+    Inplement data structure as used in the C version.
++ Messure execution times of both versions under static circumstances.
+    Show the results in the README but also this messurement 
+    code should stay in the codebase as an additional printable information
+    for 'verbose'(see below).
 FEATURES:
 + Argument [Number]
     A Number can be added to args which tells the program
     how many directories should be made.
     e.g. cdir test 10
++ Argument '-v' changes to '--verbose'
+    Displays folders which have the correct formatting.
+    Show occurances of folders and their numbering as well. 
 Status: -
 
 
