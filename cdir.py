@@ -34,7 +34,7 @@ def get_foldername(folder_names):
 
 def help_text():
     """
-    This function displayes the help text.
+    This function displays the help text.
     :return: None
     """
     print("HELP\n----")
@@ -80,15 +80,18 @@ def main():
         # check if the folder name has the correct structure
         if len(element_list) >= 2:
             try:
-                # get the folder name and the number separably
+                # get the folder name and the number separate
                 numbers.append(int(element_list[-1]))
+                # putting the foldername back together
                 folder_name_str = ''
                 for x in element_list[:-1]:
                     folder_name_str += '_' + x
+                # remove additional underscores if they occur
                 if folder_name_str[0] == '_':
                     folder_name_str = folder_name_str[1:]
+                # append foldername to list
                 folder_names.append(folder_name_str)
-                # get the digit count of the number
+                # get the digit count of the number -> this part fails pretty easily
                 numbers_num_digits.append(int(len(element_list[-1])))
             except ValueError:
                 print(f"Was not able to convert string to int of folder '{element}'")
@@ -98,22 +101,28 @@ def main():
     # if no additional argument was given
     if command_line_args.__len__() == 1 or command_line_args[1] == '':
         foldername = get_foldername(folder_names)
-    # if a additional folder name is given
+    # if a additional command line argument is given
     elif command_line_args.__len__() == 2 and command_line_args[1] != '':
+        # help flag is set
         if command_line_args[1] == 'help' or \
                 command_line_args[1] == '-h' or \
                 command_line_args[1] == '-?' or \
                 command_line_args[1] == '--help':
+            # prints help text and exits
             help_text()
             exit(0)
+        # version flag is set
         elif command_line_args[1] in ['--version', '-v', '-V']:
-            # display current version
+            # displays current version and exits
             print('CDIR Version {}\n'.format(VERSION))
             exit(0)
         else:
+            # given argument is a foldername
             foldername = command_line_args[1]
     else:
+        # something went wrong
         raise SyntaxError("Command not properly used!")
+    # highest number of chosen foldername
     highest_number = -1
     # length of the number (needed for given 0s before the number)
     number_length = -1
@@ -130,6 +139,7 @@ def main():
     print(f"Creating directory {new_foldername}")
     # create the new folder
     os.makedirs(new_foldername)
+    # everything went fine -> print and terminate
     print("done.")
 
 
