@@ -23,14 +23,14 @@ Into Version 1.0.5:
 # + Remove unnecessary int variable (C)
         Remove counter when directories are listed
 + Add comments (Python)
-+ Add comments (C)
+# + Add comments (C)
 Status: dev
 
 
 Into Version 1.1.0:
 + (Optimizations) (C)
 + Manual argument handling (C)
-    Therefore string args will be possible
+    Therefore string args will be possible.
 + Code Cleanup (Python)
     Inplement data structure as used in the C version.
 + Messure execution times of both versions under static circumstances.
@@ -44,7 +44,7 @@ FEATURES:
     e.g. cdir test 10
 + Argument '-v' changes to '--verbose'
     Displays folders which have the correct formatting.
-    Show occurances of folders and their numbering as well. 
+    Show occurrences of folders and their numbering as well.
 Status: -
 
 
