@@ -3,7 +3,7 @@ import re
 import sys
 
 # current version of the project
-VERSION = '1.0.4'
+VERSION = '1.0.5'
 
 
 def get_foldername(folder_names):

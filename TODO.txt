@@ -22,9 +22,9 @@ Into Version 1.0.5:
 # + Display CDIR version (C)
 # + Remove unnecessary int variable (C)
         Remove counter when directories are listed
-+ Add comments (Python)
+# + Add comments (Python)
 # + Add comments (C)
-Status: dev
+Status: done
 
 
 Into Version 1.1.0:
@@ -45,7 +45,7 @@ FEATURES:
 + Argument '-v' changes to '--verbose'
     Displays folders which have the correct formatting.
     Show occurrences of folders and their numbering as well.
-Status: -
+Status: dev
 
 
 
