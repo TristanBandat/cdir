@@ -46,8 +46,6 @@ int main(int argc, char **argv) {
     struct dirent dirs[MAX_DIR_NUMBER];
     // number of directories in cwd
     int num_dirs = 0;
-    // current index of the next free slot in 'dirs[]'
-    int dirs_index = 0;
     // directories to be ignored by default
     char ignored_dirs[2][3] = {".", ".."};
     // correct formatted directories in cwd
@@ -79,11 +77,9 @@ int main(int argc, char **argv) {
                 continue;
             }
             // save directory pointer in array
-            dirs[dirs_index] = *de;
+            dirs[num_dirs] = *de;
             // increment counter
             num_dirs++;
-            // increment index
-            dirs_index++;
         }
     }
 

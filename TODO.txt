@@ -20,8 +20,8 @@ Status: done
 Into Version 1.0.5:
 # + Display CDIR version (Python)
 # + Display CDIR version (C)
-+ Remove unnecessary int variable (C)
-    Remove counter when directories are listed
+# + Remove unnecessary int variable (C)
+        Remove counter when directories are listed
 + Add comments (Python)
 + Add comments (C)
 Status: dev
