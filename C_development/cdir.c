@@ -10,20 +10,21 @@
 #define VERSION "1.0.4"             // current version of the project
 #define LEN_FLAG_ARR 3              // number of flags
 #define LEN_ARGS_ARR LEN_FLAG_ARR   // use this name for all use cases where you don't refer directly to the flag array
-#define MAX_PATH_LEN 1024
-#define MAX_DIR_NUMBER 512
-#define MAX_DIR_NAME_LEN 256
-#define MAX_DIR_NAME_SEQ_LEN MAX_DIR_NAME_LEN
-#define MAX_STR_NUM_LEN 16
+#define MAX_PATH_LEN 1024           // max. path length of cwd
+#define MAX_DIR_NUMBER 512          // max. number of directories in cwd
+#define MAX_DIR_NAME_LEN 256        // max. string length of the directories in cwd incl. the path
+#define MAX_DIR_NAME_SEQ_LEN MAX_DIR_NAME_LEN   // max. length a directory name can have
+#define MAX_STR_NUM_LEN 16          // max. number digits the number of the new directory name can have
 
 // structure for directories with correct formatting
 struct directory {
-    char name[MAX_DIR_NAME_LEN];
-    int occurrence;
-    int num_zeros;
-    int highest_number;
+    char name[MAX_DIR_NAME_LEN];    // name of the directory
+    int occurrence;                 // how often the directory name appeared in cwd
+    int num_zeros;                  // number of leading zeros between the underscore and the actual number
+    int highest_number;             // highest number that appeared in all directories with the same name
 };
 
+// function prototypes
 int set_flags(int, char**, int*, const char*);
 int update_flag(char flag, int* flag_arr, const char* args_arr);
 void get_cwd(char *cwd_arr);
@@ -71,7 +72,10 @@ int main(int argc, char **argv) {
 
     // get all directories from cwd
     while ((de = readdir(dr)) != NULL) {
+        // check if the current element is a directory
         if (de->d_type == DT_DIR) {
+            // check if the directory should be ignored
+            // if there should exist more than these 2 options: replace with for loop
             if ((strcmp(de->d_name, ignored_dirs[0]) == 0) ||
                 (strcmp(de->d_name, ignored_dirs[1]) == 0)) {
                 continue;
@@ -122,13 +126,14 @@ int main(int argc, char **argv) {
         create_dir(considered_directories[con_dir_occ_index], cwd_arr);
     } else {
         // directory name given as arg
-        // append an underscore to the given name
+        // get directory name and append an underscore to the given name
         strcpy(given_dir_name, argv[optind]);
         strcat(given_dir_name, "_");
 
-        // check for already existing directories
+        // check for already existing directories with given name
         for (int i = 0; i < considered_directories_index; i++) {
             if (strcmp(considered_directories[i].name, given_dir_name) == 0) {
+                // there exists a directory with given name -> create
                 create_dir(considered_directories[i], cwd_arr);
                 dir_found = true;
                 break;
@@ -137,11 +142,14 @@ int main(int argc, char **argv) {
 
         // if there was no directory found -> create a new one
         if (!dir_found) {
+            // creating a new directory structure element with given name
             strcpy(considered_directories[considered_directories_index].name, given_dir_name);
             considered_directories[considered_directories_index].occurrence = 1;
             considered_directories[considered_directories_index].num_zeros = 0;
             considered_directories[considered_directories_index].highest_number = -1;
+            // update the next free slot in the array
             considered_directories_index++;
+            // creating the directory
             create_dir(considered_directories[considered_directories_index-1], cwd_arr);
         }
     }
@@ -149,6 +157,7 @@ int main(int argc, char **argv) {
     // close directory
     closedir(dr);
 
+    // task completed successfully and returns
     printf("done.\n");
     return 0;
 }
@@ -172,6 +181,7 @@ int set_flags(int argc, char **argv, int* flag_arr, const char* args_arr)
         all_args[i] = *(args_arr + i);
     }
 
+    // NOTE: the args processing should be rewritten soon
     // go through the args
     while ((c = getopt (argc, argv, all_args)) != -1) {
         if (c == '?') {
@@ -205,9 +215,11 @@ int update_flag(char flag, int* flag_arr, const char* args_arr)
  * After the flag was set, it will terminate.
  */
 {
+    // go through the flag array
     for (int i = 0; i < LEN_ARGS_ARR; i++) {
+        // check if a flag is found
         if (flag == *(args_arr + i)) {
-            // flag found
+            // flag found -> set and terminate
             *(flag_arr + i) = 1;
             return 0;
         }
@@ -223,7 +235,9 @@ void get_cwd(char *cwd_arr)
  * If the path is larger than the constant defines, the function will raise an error.
  */
 {
+    // compute the size in bits of the array the cwd path is stored in
     int cwd_arr_size = sizeof(*cwd_arr) * MAX_PATH_LEN;
+    // gets cwd - exits the program with status -1 if something bad happens
     if (getcwd(cwd_arr, cwd_arr_size) == NULL) {
         perror("get_cwd() error");
         exit(-1);
@@ -277,57 +291,76 @@ int get_directories(struct directory *considered_directories, int num_dirs, stru
             current_char = current_dir.d_name[j];
             // check if the current characters are valid numbers
             if (is_valid_number) {
+                // check if char is a number
                 if ((current_char >= '0') && (current_char <= '9')) {
+                    // add char to 'number_sequence' and increment index
                     number_sequence[number_seq_index] = current_char;
                     number_seq_index++;
                 } else {
-                    // incorrect formatting - delete number sequence
+                    // --- incorrect formatting - delete number sequence
+                    // add incorrect 'number_sequence' to the directory name
                     strcat(name_sequence, number_sequence);
+                    // update index of the 'name_sequence'
                     name_seq_index += number_seq_index;
+                    // append current char to the sequence and update index
                     name_sequence[name_seq_index] = current_char;
                     name_seq_index++;
+                    // clear the 'number_sequence' and reset index
                     memset(number_sequence,0,MAX_STR_NUM_LEN);
                     number_seq_index = 0;
+                    // toggle 'valid number' indicator
                     is_valid_number = false;
                 }
-            } else {
+            } else {    // char is no valid number (no underscore appeared)
                 is_valid_number = false;
-                // save char in 'name_sequence'
+                // save char in 'name_sequence' and update index
                 name_sequence[name_seq_index] = current_char;
                 name_seq_index++;
             }
             // check if the current character is an underscore and the next character is a number
             if ((current_char == '_') && (current_dir.d_name[j+1] >= '0') && (current_dir.d_name[j+1] <= '9')) {
+                // the following sequence could be a valid 'number_sequence' -> set indicator
                 is_valid_number = true;
             }
         }
-        // check for leading 0s
+        // check for leading zeros
         if (number_seq_index > 0) {
+            // convert the number to an integer
             number_sequence_int = atoi(number_sequence);
+            // convert the integer number back to a string
             sprintf(number_sequence_int_char, "%i", number_sequence_int);
+            // compute the difference of length of both strings -> number of zeros
             num_zeros_number_sequence = strlen(number_sequence) - strlen(number_sequence_int_char);
+            // go through all already existing directory entries
             for (int j = 0; j < considered_directories_index; j++) {
                 // check if the name already exists
                 if (strcmp(considered_directories[j].name, name_sequence) == 0 &&
                     (num_zeros_number_sequence == considered_directories[j].num_zeros)) {
+                    // the directory exists already -> increment occurrence
                     considered_directories[j].occurrence++;
+                    // check if the highest seen number of this directory name needs to be updated
                     if (number_sequence_int > considered_directories[j].highest_number)
+                        // updating the highest seen number
                         considered_directories[j].highest_number = number_sequence_int;
+                    // set the indicator to true and break
                     name_seq_exists = true;
                     break;
                 }
             }
             // if the directory does not already exist -> add it to the array
             if (!name_seq_exists) {
+                // --- creating a new directory entry with given variables
                 strcpy(considered_directories[considered_directories_index].name, name_sequence);
                 considered_directories[considered_directories_index].occurrence = 1;
                 considered_directories[considered_directories_index].num_zeros = num_zeros_number_sequence;
                 considered_directories[considered_directories_index].highest_number = number_sequence_int;
                 considered_directories_index++;
             }
+            // reset indicator
             name_seq_exists = false;
         }
 
+        // --- done for the current iteration
         // empty the strings and reset the indices
         memset(number_sequence,0,MAX_STR_NUM_LEN);
         number_seq_index = 0;
@@ -336,6 +369,7 @@ int get_directories(struct directory *considered_directories, int num_dirs, stru
         is_valid_number = false;
     }
 
+    // return the length/next free index of the 'considered_directories' data structure
     return considered_directories_index;
 }
 
@@ -368,22 +402,31 @@ void create_dir(struct directory dir, char *cwd_arr)
  * If an error while creating occurs, the program exits with status -1.
  */
 {
+    // finished directory name incl. path
     char path_dir_name[MAX_DIR_NAME_LEN] = {};
+    // string to store temporarily the number for 'path_dir_name' in
     char str[MAX_STR_NUM_LEN] = {};
 
-    // put the directory name together
+    // --- put the directory name together
+    // paste current path
     strcpy(path_dir_name, cwd_arr);
+    // paste a missing slash for completeness
     strcat(path_dir_name, "/");
+    // paste the given directory name
     strcat(path_dir_name, dir.name);
+    // paste the given amount of zeros between the underscore and the number
     for (int i = 0; i < dir.num_zeros; i++)
         strcat(path_dir_name, "0");
+    // cast the integer directory number to a string
     sprintf(str, "%i", dir.highest_number+1);
+    // paste the new directory number
     strcat(path_dir_name, str);
 
     // print the finished directory path + name
     printf("Creating directory %s\n", path_dir_name);
     // create directory
     if (mkdir(path_dir_name, 0700) == -1) {
+        // something bad happened
         printf("ERROR while creating directory.\n\n");
         exit(-1);
     }
