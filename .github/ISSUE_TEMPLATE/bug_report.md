@@ -7,6 +7,8 @@ assignees: ''
 
 ---
 
+- [ ] I have read open and closed issues for duplicates.
+
 **Describe the bug**
 A clear and concise description of what the bug is.
 
@@ -24,7 +26,7 @@ A clear and concise description of what you expected to happen.
 - [ ] Python
 - [ ] C
 
-**Desktop (please complete the following information):**
+**Desktop**
  - OS: [e.g. Debian 10]
  - Version: [e.g. 1.0.5]
 
