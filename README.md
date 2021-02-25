@@ -2,7 +2,10 @@
 [![Forks][forks-shield]][forks-url]
 [![Stargazers][stars-shield]][stars-url]
 [![Issues][issues-shield]][issues-url]
+[![Pull Requests][pulls-shield]][pulls-url]
 [![MIT License][license-shield]][license-url]
+[![closed Pull Requests][closed_pulls-shield]][closed_pulls-url]
+[![closed Issues][closed_issues-shield]][closed_issues-url]
 <!-- [![LinkedIn][linkedin-shield]][linkedin-url] -->
 
 
@@ -252,7 +255,13 @@ Project Link: [https://github.com/TristanBandat/cdir](https://github.com/Tristan
 [stars-url]: https://github.com/TristanBandat/cdir/stargazers
 [issues-shield]: https://img.shields.io/github/issues/TristanBandat/cdir.svg?style=for-the-badge
 [issues-url]: https://github.com/TristanBandat/cdir/issues
+[pulls-shield]: https://img.shields.io/github/issues-pr/TristanBandat/cdir.svg?style=for-the-badge
+[pulls-url]: https://github.com/TristanBandat/cdir/pulls
 [license-shield]: https://img.shields.io/github/license/TristanBandat/cdir.svg?style=for-the-badge
 [license-url]: https://github.com/TristanBandat/cdir/blob/master/LICENSE.txt
+[closed_pulls-shield]: https://img.shields.io/github/issues-pr-closed/TristanBandat/cdir?style=for-the-badge
+[closed_pulls-url]: https://github.com/TristanBandat/cdir/pulls?q=is%3Apr+is%3Aclosed
+[closed_issues-shield]: https://img.shields.io/github/issues-closed/TristanBandat/cdir?style=for-the-badge
+[closed_issues-url]: https://github.com/TristanBandat/cdir/issues?q=is%3Aissue+is%3Aclosed
 <!-- [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
 [linkedin-url]: https://linkedin.com/in/TristanBandat -->
