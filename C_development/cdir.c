@@ -406,6 +406,23 @@ void create_dir(struct directory dir, char *cwd_arr)
     char path_dir_name[MAX_DIR_NAME_LEN] = {};
     // string to store temporarily the number for 'path_dir_name' in
     char str[MAX_STR_NUM_LEN] = {};
+    // highest occurred directory number
+    char highest_number_str[MAX_STR_NUM_LEN] = {};
+    // new directory number
+    int new_number = dir.highest_number + 1;
+    // new directory number as string
+    char new_number_str[MAX_STR_NUM_LEN] = {};
+    // difference between the digit length of the old number and the new one
+    int diff_digit_length = 0;
+
+    // --- calculate the difference between the new and the old digit length
+    // cast new directory number to string
+    sprintf(new_number_str, "%i", new_number);
+    // cast previous highest directory number to string
+    sprintf(highest_number_str, "%i", dir.highest_number);
+    // compute the difference of length of both strings -> diff between the 2 digit lengths
+    diff_digit_length = strlen(new_number_str) - strlen(highest_number_str);
+    // ---
 
     // --- put the directory name together
     // paste current path
@@ -415,10 +432,10 @@ void create_dir(struct directory dir, char *cwd_arr)
     // paste the given directory name
     strcat(path_dir_name, dir.name);
     // paste the given amount of zeros between the underscore and the number
-    for (int i = 0; i < dir.num_zeros; i++)
+    for (int i = 0; i < (dir.num_zeros - diff_digit_length); i++)
         strcat(path_dir_name, "0");
-    // cast the integer directory number to a string
-    sprintf(str, "%i", dir.highest_number+1);
+    // cast the new directory number to a string
+    sprintf(str, "%i", new_number);
     // paste the new directory number
     strcat(path_dir_name, str);
 
