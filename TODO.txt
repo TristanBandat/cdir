@@ -28,7 +28,9 @@ Status: done
 
 
 Into Version 1.1.0:
-+ (Optimizations) (C)
+# + (Optimizations) (C)
+    Run through the directory entrys only once and update
+    'considered_directories' on the way.
 + Manual argument handling (C)
     Therefore string args will be possible.
 + Code Cleanup (Python)
@@ -40,6 +42,9 @@ Into Version 1.1.0:
 # + Bugfix for Issue #10
 + Convert TODO to Markdown file
 + Move old version TODOs into seperate file (prior_versions.md)
+BUGFIXES:
++ Issue #12
++ Issue #13
 FEATURES:
 + Argument [Number]
     A Number can be added to args which tells the program
