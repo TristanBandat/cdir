@@ -259,6 +259,8 @@ int get_directories(struct directory *considered_directories, DIR *dr)
     char number_sequence[MAX_STR_NUM_LEN] = {};
     // index of the next free position in 'number_sequence'
     int number_seq_index = 0;
+    // highest number of current directory as string
+    char considered_directory_number_str[MAX_STR_NUM_LEN] = {};
 
     // get all directories from cwd
     while ((de = readdir(dr)) != NULL) {
@@ -321,15 +323,26 @@ int get_directories(struct directory *considered_directories, DIR *dr)
                 num_zeros_number_sequence = strlen(number_sequence) - strlen(number_sequence_int_char);
                 // go through all already existing directory entries
                 for (int j = 0; j < considered_directories_index; j++) {
+                    // convert the current highest number to string
+                    sprintf(considered_directory_number_str, "%i", considered_directories[j].highest_number);
                     // check if the name already exists
                     if (strcmp(considered_directories[j].name, name_sequence) == 0 &&
-                        (num_zeros_number_sequence == considered_directories[j].num_zeros)) {
+                            ((num_zeros_number_sequence == considered_directories[j].num_zeros) ||
+                            ((num_zeros_number_sequence == (considered_directories[j].num_zeros - 1)) &&
+                            ((strlen(number_sequence_int_char) - 1) == strlen(considered_directory_number_str))))) {
                         // the directory exists already -> increment occurrence
                         considered_directories[j].occurrence++;
                         // check if the highest seen number of this directory name needs to be updated
-                        if (number_sequence_int > considered_directories[j].highest_number)
+                        if (number_sequence_int > considered_directories[j].highest_number) {
                             // updating the highest seen number
                             considered_directories[j].highest_number = number_sequence_int;
+                        }
+
+                        // BUG: directories do not show up ordered -> not allowed to decrease number of zeros here
+                        // if leading number of zeros decreased -> decrement 'num_zeros'
+                        if (num_zeros_number_sequence == (considered_directories[j].num_zeros - 1))
+                            considered_directories[j].num_zeros--;
+
                         // set the indicator to true and break
                         name_seq_exists = true;
                         break;
