@@ -50,6 +50,8 @@ The TODOs of the released versions will be moved to the
 
 ## General
 
+- [ ] Create a Wiki.
+
 ---
 
 ## Additional Features
