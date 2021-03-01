@@ -24,7 +24,7 @@ The TODOs of the released versions will be moved to the
 
 - [X] Convert TODO to Markdown file
 
-- [ ] Move the old version TODOs into the separate [OLD_VERSIONS.md][old_versions-url] file.
+- [X] Move the old version TODOs into the separate [OLD_VERSIONS.md][old_versions-url] file.
 
 ### Bugfixes:
 
