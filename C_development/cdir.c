@@ -16,7 +16,7 @@
 #define MAX_DIR_NAME_SEQ_LEN MAX_DIR_NAME_LEN   // max. length a directory name can have
 #define MAX_STR_NUM_LEN 16          // max. number digits the number of the new directory name can have
 #define IGNORED_DIRS {".", ".."}    // directories to be ignored by default
-#define LEN_STR_ARGS_ARR 1          // length of the string argument array
+#define LEN_STR_ARGS_ARR 2          // length of the string argument array
 #define NUM_NAME_ARG 2              // number of possible given dir/file name arguments
 
 // structure for directories with correct formatting
@@ -28,10 +28,11 @@ struct directory {
 };
 
 // function prototypes
-int arg_handler(int, char**, int *flag_arr, int *str_flag_arr, const char *args_arr, const char *str_args_arr,
-              char **name_arr);
+int arg_handler(int, char**, int *flag_arr, int *str_flag_arr, const char *args_arr,
+                const char str_args_arr[LEN_STR_ARGS_ARR][MAX_DIR_NAME_SEQ_LEN],
+                char name_arr[NUM_NAME_ARG][MAX_DIR_NAME_SEQ_LEN]);
 int update_flag(char flag, int* flag_arr, const char* args_arr);
-int update_flag_str(int, char*, int *str_flag_arr, const char *str_args_arr);
+int update_flag_str(char*, int *str_flag_arr, const char str_args_arr[LEN_STR_ARGS_ARR][MAX_DIR_NAME_SEQ_LEN]);
 void get_cwd(char *cwd_arr);
 int get_directories(struct directory*, DIR*);
 void print_help();
@@ -45,7 +46,7 @@ int main(int argc, char **argv) {
     // array with all single character arguments
     const char args_arr[LEN_ARGS_ARR] = {'h', 'v', 'V'};
     // array with all string arguments
-    const char str_args_arr[LEN_STR_ARGS_ARR][MAX_DIR_NAME_SEQ_LEN] = {"help, version"};
+    const char str_args_arr[LEN_STR_ARGS_ARR][MAX_DIR_NAME_SEQ_LEN] = {"help", "version"};
     // array where the parsed arguments are stored
     char name_arr[NUM_NAME_ARG][MAX_DIR_NAME_SEQ_LEN] = {};
     // array for storing the current working directory (cwd)
@@ -74,21 +75,23 @@ int main(int argc, char **argv) {
     }
 
     // set the flags
-    if (set_flags(argc, argv, flag_arr, args_arr)) {
+    // if (set_flags(argc, argv, flag_arr, args_arr)) {
+    if (arg_handler(argc, argv, flag_arr, str_flag_arr, args_arr, str_args_arr, name_arr)) {
         // Something went wrong - abort
         printf("Error with args - aborted\n");
         return -1;
     }
 
     // check for flags
-    if (flag_arr[0]) {                              // check if the user wants help
+    if (flag_arr[0] || str_flag_arr[0]) {                              // check if the user wants help
         print_help();
         return 0;
-    } else if (flag_arr[1] || flag_arr[2]) {        // check for version number
+    } else if (flag_arr[1] || flag_arr[2] || str_flag_arr[1]) {        // check for version number
         printf("CDIR Version %s\n\n", VERSION);
         return 0;
     }
 
+    /*
     // get all considered directories
     considered_directories_index = get_directories(considered_directories, dr);
 
@@ -140,7 +143,7 @@ int main(int argc, char **argv) {
             create_dir(considered_directories[considered_directories_index-1], cwd_arr);
         }
     }
-
+    */
     // close directory
     closedir(dr);
 
@@ -149,8 +152,9 @@ int main(int argc, char **argv) {
     return 0;
 }
 
-int arg_handler(int argc, char **argv, int *flag_arr, int *str_flag_arr, const char *args_arr, const char *str_args_arr,
-              char **name_arr)
+int arg_handler(int argc, char **argv, int *flag_arr, int *str_flag_arr, const char *args_arr,
+                const char str_args_arr[LEN_STR_ARGS_ARR][MAX_DIR_NAME_SEQ_LEN],
+                char name_arr[NUM_NAME_ARG][MAX_DIR_NAME_SEQ_LEN])
 /*
  * This function sets all flags given by the command line arguments
  * and are in the arguments array 'args_arr' in the flag array 'flag_arr'.
@@ -168,7 +172,6 @@ int arg_handler(int argc, char **argv, int *flag_arr, int *str_flag_arr, const c
     // next free index in 'arg_buffer'
     int arg_buffer_index = 0;
 
-    // TODO: write argument handler from scratch
     // go through the command line args
     // -> skipping the first argument because it contains the command itself
     for (int i = 1; i < argc; i++) {
@@ -182,6 +185,9 @@ int arg_handler(int argc, char **argv, int *flag_arr, int *str_flag_arr, const c
             if (argv[i][j] == '-') {
                 is_flag = true;
                 flag_dash_count++;
+                // 3 or more dashes -> abort
+                if (flag_dash_count >= 3)
+                    return 1;
             }
 
             // check for beginning of string
@@ -200,16 +206,14 @@ int arg_handler(int argc, char **argv, int *flag_arr, int *str_flag_arr, const c
                     }
                     single_dash_flag_updated = true;
                     continue;
-                } else if (flag_dash_count >= 3) {
-                    // 2 dashes will be handled below
-                    // 3 or more dashes -> abort
-                    return 1;
                 }
             }
 
             // handle string argument
-            arg_buffer[arg_buffer_index] = argv[i][j];
-            arg_buffer_index++;
+            if (argv[i][j] != '-') {
+                arg_buffer[arg_buffer_index] = argv[i][j];
+                arg_buffer_index++;
+            }
 
             single_dash_flag_updated = false;
         }
@@ -217,7 +221,10 @@ int arg_handler(int argc, char **argv, int *flag_arr, int *str_flag_arr, const c
         // handle argument in 'arg_buffer' ...
         if ((arg_buffer_index > 0) && is_flag) {
             // ... when it is a flag
-            update_flag_str(arg_buffer_index, arg_buffer, str_flag_arr, str_args_arr);
+            if (update_flag_str(arg_buffer, str_flag_arr, str_args_arr) == 1) {
+                // unknown argument
+                return 1;
+            }
         } else if (arg_buffer_index > 0) {
             // ... when it is an argument
             // TODO: check if there is already something in 'name_arr'
@@ -226,6 +233,15 @@ int arg_handler(int argc, char **argv, int *flag_arr, int *str_flag_arr, const c
             // save argument
             strcpy(name_arr[0], arg_buffer);
         }
+
+        // --- check for wrong argument parsing
+        // dash counter is 1 and there was no character parsed to 'update_flag()' (parsing '-' only)
+        if ((flag_dash_count == 1) && !single_dash_flag_updated)
+            return 1;
+        // dash counter is 2 but nothing in arg buffer (parsing '--' only)
+        if ((flag_dash_count == 2) && (arg_buffer_index == 0))
+            return 1;
+        // ---
 
         // --- reset all temporary variables
         // reset flag indicator and counter
@@ -264,7 +280,7 @@ int update_flag(char flag, int* flag_arr, const char* args_arr)
     return 1;
 }
 
-int update_flag_str(int arg_buffer_index, char *arg_buffer, int *str_flag_arr, const char *str_args_arr)
+int update_flag_str(char *arg_buffer, int *str_flag_arr, const char str_args_arr[LEN_STR_ARGS_ARR][MAX_DIR_NAME_SEQ_LEN])
 /*
  * This function updates the flag given by the string 'arg_buffer'.
  * It takes one flag at a time and updates the state if the flag is defined in
@@ -274,7 +290,17 @@ int update_flag_str(int arg_buffer_index, char *arg_buffer, int *str_flag_arr, c
  * After the flag was set, it will terminate.
  */
 {
-
+    // go through the flag array
+    for (int i = 0; i < LEN_STR_ARGS_ARR; i++) {
+        // check if a flag is found
+        if (strcmp(arg_buffer, str_args_arr[i]) == 0) {
+            // flag found -> set and terminate
+            *(str_flag_arr + i) = 1;
+            return 0;
+        }
+    }
+    // flag not found
+    return 1;
 }
 
 void get_cwd(char *cwd_arr)
