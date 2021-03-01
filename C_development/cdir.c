@@ -21,7 +21,7 @@
 struct directory {
     char name[MAX_DIR_NAME_LEN];    // name of the directory
     int occurrence;                 // how often the directory name appeared in cwd
-    int num_zeros;                  // number of leading zeros between the underscore and the actual number
+    int num_digits;                  // number of digits after the underscore (leading zeros + actual number)
     int highest_number;             // highest number that appeared in all directories with the same name
 };
 
@@ -121,7 +121,8 @@ int main(int argc, char **argv) {
             // creating a new directory structure element with given name
             strcpy(considered_directories[considered_directories_index].name, given_dir_name);
             considered_directories[considered_directories_index].occurrence = 1;
-            considered_directories[considered_directories_index].num_zeros = 0;
+            // set number of digits to 1 because the directory number is in this case 0 by default
+            considered_directories[considered_directories_index].num_digits = 1;
             considered_directories[considered_directories_index].highest_number = -1;
             // update the next free slot in the array
             considered_directories_index++;
@@ -245,10 +246,6 @@ int get_directories(struct directory *considered_directories, DIR *dr)
     int considered_directories_index = 0;
     // converted number given in 'number_sequence'
     int number_sequence_int;
-    // reconverted number to string from 'number_sequence_int'
-    char number_sequence_int_char[MAX_STR_NUM_LEN] = {};
-    // number of leading 0s in 'number_sequence'
-    int num_zeros_number_sequence;
     // directory name without the number
     char name_sequence[MAX_DIR_NAME_SEQ_LEN] = {};
     // index of the next free position in 'name_sequence'
@@ -257,6 +254,8 @@ int get_directories(struct directory *considered_directories, DIR *dr)
     bool name_seq_exists = false;
     // sequence of valid numbers as string
     char number_sequence[MAX_STR_NUM_LEN] = {};
+    // length of 'number_sequence'
+    int number_sequence_len = 0;
     // index of the next free position in 'number_sequence'
     int number_seq_index = 0;
 
@@ -311,25 +310,32 @@ int get_directories(struct directory *considered_directories, DIR *dr)
                 }
             }
 
-            // check for leading zeros
+            // length of the number sequence
+            number_sequence_len = (int)(strlen(number_sequence));
+
+            // check if a valid directory was found (with numbering)
             if (number_seq_index > 0) {
                 // convert the number to an integer
                 number_sequence_int = atoi(number_sequence);
-                // convert the integer number back to a string
-                sprintf(number_sequence_int_char, "%i", number_sequence_int);
-                // compute the difference of length of both strings -> number of zeros
-                num_zeros_number_sequence = strlen(number_sequence) - strlen(number_sequence_int_char);
                 // go through all already existing directory entries
                 for (int j = 0; j < considered_directories_index; j++) {
                     // check if the name already exists
-                    if (strcmp(considered_directories[j].name, name_sequence) == 0 &&
-                        (num_zeros_number_sequence == considered_directories[j].num_zeros)) {
+                    if (strcmp(considered_directories[j].name, name_sequence) == 0) {
                         // the directory exists already -> increment occurrence
                         considered_directories[j].occurrence++;
+
                         // check if the highest seen number of this directory name needs to be updated
-                        if (number_sequence_int > considered_directories[j].highest_number)
+                        if (number_sequence_int > considered_directories[j].highest_number) {
                             // updating the highest seen number
                             considered_directories[j].highest_number = number_sequence_int;
+                        }
+
+                        // check if the highest number of digits needs to be updated
+                        if (number_sequence_len > considered_directories[j].num_digits) {
+                            // updating the highest number of seen digits
+                            considered_directories[j].num_digits = number_sequence_len;
+                        }
+
                         // set the indicator to true and break
                         name_seq_exists = true;
                         break;
@@ -337,11 +343,12 @@ int get_directories(struct directory *considered_directories, DIR *dr)
                 }
 
                 // if the directory does not already exist -> add it to the array
+                // -> depends on the fact that the if statement above was executed
                 if (!name_seq_exists) {
                     // --- creating a new directory entry with given variables
                     strcpy(considered_directories[considered_directories_index].name, name_sequence);
                     considered_directories[considered_directories_index].occurrence = 1;
-                    considered_directories[considered_directories_index].num_zeros = num_zeros_number_sequence;
+                    considered_directories[considered_directories_index].num_digits = number_sequence_len;
                     considered_directories[considered_directories_index].highest_number = number_sequence_int;
                     considered_directories_index++;
                 }
@@ -397,24 +404,18 @@ void create_dir(struct directory dir, char *cwd_arr)
 {
     // finished directory name incl. path
     char path_dir_name[MAX_DIR_NAME_LEN] = {};
-    // string to store temporarily the number for 'path_dir_name' in
-    char str[MAX_STR_NUM_LEN] = {};
-    // highest occurred directory number
-    char highest_number_str[MAX_STR_NUM_LEN] = {};
     // new directory number
     int new_number = dir.highest_number + 1;
     // new directory number as string
     char new_number_str[MAX_STR_NUM_LEN] = {};
-    // difference between the digit length of the old number and the new one
-    int diff_digit_length = 0;
+    // digit length of the new number
+    int new_number_str_len = 0;
 
-    // --- calculate the difference between the new and the old digit length
+    // --- cast the new number to string and calculate its digit length
     // cast new directory number to string
     sprintf(new_number_str, "%i", new_number);
-    // cast previous highest directory number to string
-    sprintf(highest_number_str, "%i", dir.highest_number);
-    // compute the difference of length of both strings -> diff between the 2 digit lengths
-    diff_digit_length = strlen(new_number_str) - strlen(highest_number_str);
+    // get the digit length of the new number
+    new_number_str_len = (int)strlen(new_number_str);
     // ---
 
     // --- put the directory name together
@@ -425,12 +426,11 @@ void create_dir(struct directory dir, char *cwd_arr)
     // paste the given directory name
     strcat(path_dir_name, dir.name);
     // paste the given amount of zeros between the underscore and the number
-    for (int i = 0; i < (dir.num_zeros - diff_digit_length); i++)
+    for (int i = 0; i < (dir.num_digits - new_number_str_len); i++)
         strcat(path_dir_name, "0");
-    // cast the new directory number to a string
-    sprintf(str, "%i", new_number);
     // paste the new directory number
-    strcat(path_dir_name, str);
+    strcat(path_dir_name, new_number_str);
+    // ---
 
     // print the finished directory path + name
     printf("Creating directory %s\n", path_dir_name);
