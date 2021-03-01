@@ -6,6 +6,7 @@ bugfixes as well as features which are not directly related to the main version 
 The TODOs of the next version(s) are stored in the
 [TODO.md][todo-url] file.
 
+---
 
 ## Version 1.0.2
 
@@ -13,6 +14,7 @@ The TODOs of the next version(s) are stored in the
 
 ### Status: `done`
 
+---
 
 ## Version 1.0.3
 
@@ -23,6 +25,7 @@ Release: [v1.0.3][v1.0.3-url]
 
 ### Status: `done`
 
+---
 
 ## Version 1.0.4
 
@@ -32,6 +35,7 @@ Release: [v1.0.4][v1.0.4-url]
 
 ### Status: `done`
 
+---
 
 ## Version 1.0.5
 - [X] Display CDIR version (Python)
