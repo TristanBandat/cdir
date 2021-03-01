@@ -6,6 +6,8 @@ bugfixes as well as new features which are not directly related to the upcoming 
 The TODOs of the released versions will be moved to the
 [OLD_VERSIONS.md][old_versions-url] file.
 
+---
+
 ## Version 1.1.0
 
 - [X] (Optimizations) (C)<br>
@@ -44,6 +46,7 @@ The TODOs of the released versions will be moved to the
 
 ### Status: `dev`
 
+---
 
 ## Additional Features
 
@@ -54,6 +57,7 @@ The TODOs of the released versions will be moved to the
 - [ ] Argument `-f FILE`<br>
     A file can be used for multiple directory creation and configuration.
 
+---
 
 ## Additional Bugfixes
 
