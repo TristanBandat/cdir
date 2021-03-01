@@ -39,11 +39,11 @@ Into Version 1.1.0:
     Show the results in the README but also this messurement 
     code should stay in the codebase as an additional printable information
     for 'verbose'(see below).
-# + Bugfix for Issue #10
 + Convert TODO to Markdown file
 + Move old version TODOs into seperate file (prior_versions.md)
 BUGFIXES:
-+ Issue #12
+# + Bugfix for Issue #10
+# + Issue #12
 + Issue #13
 FEATURES:
 + Argument [Number]
