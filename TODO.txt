@@ -44,7 +44,7 @@ Into Version 1.1.0:
 BUGFIXES:
 # + Bugfix for Issue #10
 # + Issue #12
-+ Issue #13
+# + Issue #13
 FEATURES:
 + Argument [Number]
     A Number can be added to args which tells the program
@@ -52,7 +52,7 @@ FEATURES:
     e.g. cdir test 10
 + Argument '-v' changes to '--verbose'
     Displays folders which have the correct formatting.
-    Show occurrences of folders and their numbering as well.
+    Shows occurrences of folders and their numbering as well.
 Status: dev
 
 
