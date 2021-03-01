@@ -48,6 +48,10 @@ The TODOs of the released versions will be moved to the
 
 ---
 
+## General
+
+---
+
 ## Additional Features
 
 - [ ] Argument `-s`<br>
