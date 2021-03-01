@@ -7,7 +7,7 @@ assignees: ''
 
 ---
 
-- [ ] I have read open and closed issues for duplicates.
+- [ ] I have searched open and closed issues for duplicates.
 
 **Describe the bug**
 A clear and concise description of what the bug is.
