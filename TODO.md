@@ -13,7 +13,7 @@ The TODOs of the released versions will be moved to the
 - [X] (Optimizations) (C)<br>
     Run through the directory entries only once and update `considered_directories` on the way.
 
-- [ ] Manual argument handling (C)<br>
+- [X] Manual argument handling (C)<br>
     Therefore string args will be possible.
 
 - [ ] Code Cleanup (Python)<br>

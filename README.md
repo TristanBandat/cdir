@@ -106,8 +106,8 @@ The Python version will get updates first but is a little slower and needs a Pyt
    
 
 3. Copy the chosen file in a separate folder<br><br>
-_Note: If you do not have a folder called `.bin` in your home directory you should create one first or 
-   copy the files directly into your home directory (not recommended)._<br><br>
+_Note: If you do not have a folder called `.bin` in your home directory you should create one first 
+   (recommended) or copy the files directly into your home directory (not recommended)._<br><br>
 Python:
    ```sh
    cp cdir.py ~/.bin/.
@@ -176,23 +176,17 @@ Visit the help page with one of the following flags:<br>
   <b>C:</b>
     <ul>
         <li>-h</li>
+        <li>--help</li>
     </ul>
 
 
 * Version<br>
 Get the current version of CDIR:<br>
-  <b>Python:</b>
   <ul>
     <li>-v</li>
     <li>-V</li>
     <li>--version</li>
   </ul>
-  <b>C:</b>
-  <ul>
-    <li>-v</li>
-    <li>-V</li>
-  </ul>
-
 
 
 <!-- ROADMAP -->
