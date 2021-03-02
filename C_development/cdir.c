@@ -1,8 +1,7 @@
 #include <stdio.h>
 #include <stdbool.h>
 #include <stdlib.h>
-#include <ctype.h>
-// #include <unistd.h>
+#include <unistd.h>
 #include <dirent.h>
 #include <string.h>
 #include <sys/stat.h>
@@ -17,7 +16,7 @@
 #define MAX_STR_NUM_LEN 16          // max. number digits the number of the new directory name can have
 #define IGNORED_DIRS {".", ".."}    // directories to be ignored by default
 #define LEN_STR_ARGS_ARR 2          // length of the string argument array
-#define NUM_NAME_ARG 2              // number of possible given dir/file name arguments
+#define NUM_NAME_ARG 1              // number of possible given dir/file name arguments
 
 // structure for directories with correct formatting
 struct directory {
@@ -63,6 +62,8 @@ int main(int argc, char **argv) {
     bool dir_found = false;
     // directory name given as arg
     char given_dir_name[MAX_DIR_NAME_LEN];
+    // found arguments inside name_arr
+    bool name_args_found = false;
 
     // get the current working directory
     get_cwd(cwd_arr);
@@ -82,6 +83,14 @@ int main(int argc, char **argv) {
         return -1;
     }
 
+    // check for 'name_args'
+    for (int i = 0; i < NUM_NAME_ARG; i++) {
+        if (strcmp(name_arr[i], "\0") != 0) {
+            name_args_found = true;
+            break;
+        }
+    }
+
     // check for flags
     if (flag_arr[0] || str_flag_arr[0]) {                              // check if the user wants help
         print_help();
@@ -91,19 +100,17 @@ int main(int argc, char **argv) {
         return 0;
     }
 
-    /*
     // get all considered directories
     considered_directories_index = get_directories(considered_directories, dr);
 
     // no directory or arg found
-    if ((considered_directories_index == 0) &&
-    ((optind >= argc) || (strcmp(argv[optind], "") == 0))) {
+    if ((considered_directories_index == 0) && !name_args_found) {
         printf("No folder(s) found.\n");
         return 0;
     }
 
     // Check command line args for given directory name
-    if ((optind >= argc) || (strcmp(argv[optind], "") == 0)) {
+    if (!name_args_found) {
         // no directory name given
         // get the directory with the highest occurrence
         for (int i = 0; i < considered_directories_index; i++) {
@@ -116,7 +123,7 @@ int main(int argc, char **argv) {
     } else {
         // directory name given as arg
         // get directory name and append an underscore to the given name
-        strcpy(given_dir_name, argv[optind]);
+        strcpy(given_dir_name, name_arr[0]);
         strcat(given_dir_name, "_");
 
         // check for already existing directories with given name
@@ -143,7 +150,7 @@ int main(int argc, char **argv) {
             create_dir(considered_directories[considered_directories_index-1], cwd_arr);
         }
     }
-    */
+
     // close directory
     closedir(dr);
 
@@ -165,7 +172,7 @@ int arg_handler(int argc, char **argv, int *flag_arr, int *str_flag_arr, const c
     bool is_flag = false;
     // counter for the number of used dashes (1 or 2 - indicates char/string)
     int flag_dash_count = 0;
-    // check for correct parsing TODO: explain more
+    // indicator that a single dash appeared at the beginning of an argument
     bool single_dash_flag_updated = false;
     // buffer for flag argument string
     char arg_buffer[MAX_DIR_NAME_SEQ_LEN] = {};
@@ -227,7 +234,11 @@ int arg_handler(int argc, char **argv, int *flag_arr, int *str_flag_arr, const c
             }
         } else if (arg_buffer_index > 0) {
             // ... when it is an argument
-            // TODO: check if there is already something in 'name_arr'
+            // NOTE: when 'name_arr' gets multiple strings, this has to be rewritten
+            // check if there is already something in 'name_arr'
+            if (strcmp(name_arr[0], "\0") != 0) {
+                return 1;
+            }
 
             // HELP INFO: if flag set -> copy arg_buffer + set flag
             // save argument
