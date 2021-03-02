@@ -74,6 +74,8 @@ def main():
     folder_names = []
     # list with digit counts of each given folder name
     numbers_num_digits = list()
+    # number of directories which will be created
+    num_new_dirs = 1
     # go through all folders
     for element in folders:
         element_list = element.split('_')
@@ -116,9 +118,19 @@ def main():
             # displays current version and exits
             print('CDIR Version {}\n'.format(VERSION))
             exit(0)
+        elif command_line_args[1].isdigit():
+            foldername = get_foldername(folder_names)
+            num_new_dirs = int(command_line_args[1])
         else:
             # given argument is a foldername
             foldername = command_line_args[1]
+    # if a directory name and number of directories is given
+    elif command_line_args.__len__() == 3:
+        if command_line_args[1][0] == '-' or not command_line_args[2].isdigit():
+            raise SyntaxError("Command not properly used!")
+        # given argument is a foldername
+        foldername = command_line_args[1]
+        num_new_dirs = int(command_line_args[2])
     else:
         # something went wrong
         raise SyntaxError("Command not properly used!")
@@ -131,21 +143,25 @@ def main():
         if element == foldername and highest_number < numbers[i]:
             highest_number = numbers[i]
             number_length = numbers_num_digits[i]
-    # count digit length of the highest number
-    highest_number_digit_count = len(str(highest_number))
-    placeholder_count = number_length - highest_number_digit_count
-    # get the new directory number
-    new_number = highest_number + 1
-    # check for the digit number of the new directory number
-    new_number_digit_count = len(str(new_number))
-    # update the placeholder counter
-    if new_number_digit_count > highest_number_digit_count and placeholder_count > 0:
-        placeholder_count -= 1
-    # create the new folder name
-    new_foldername = foldername + '_' + ('0' * placeholder_count) + str(new_number)
-    print(f"Creating directory {new_foldername}")
-    # create the new folder
-    os.makedirs(new_foldername)
+    # set the new number
+    new_number = highest_number
+    # run through the number of new directories
+    for i in range(num_new_dirs):
+        # count digit length of the highest number
+        highest_number_digit_count = len(str(new_number))
+        placeholder_count = number_length - highest_number_digit_count
+        # get the new directory number
+        new_number += 1
+        # check for the digit number of the new directory number
+        new_number_digit_count = len(str(new_number))
+        # update the placeholder counter
+        if new_number_digit_count > highest_number_digit_count and placeholder_count > 0:
+            placeholder_count -= 1
+        # create the new folder name
+        new_foldername = foldername + '_' + ('0' * placeholder_count) + str(new_number)
+        print(f"Creating directory {new_foldername}")
+        # create the new folder
+        os.makedirs(new_foldername)
     # everything went fine -> print and terminate
     print("done.")
 
