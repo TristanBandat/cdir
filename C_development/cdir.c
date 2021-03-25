@@ -5,6 +5,7 @@
 #include <dirent.h>
 #include <string.h>
 #include <sys/stat.h>
+#include <ctype.h>
 
 #define VERSION "1.0.5"             // current version of the project
 #define LEN_FLAG_ARR 3              // number of flags
@@ -28,14 +29,14 @@ struct directory {
 
 // function prototypes
 int arg_handler(int, char**, int *flag_arr, int *str_flag_arr, const char *args_arr,
-                const char str_args_arr[LEN_STR_ARGS_ARR][MAX_DIR_NAME_SEQ_LEN],
+                const char str_args_arr[LEN_STR_ARGS_ARR][MAX_DIR_NAME_SEQ_LEN], int *num_folders,
                 char name_arr[NUM_NAME_ARG][MAX_DIR_NAME_SEQ_LEN]);
 int update_flag(char flag, int* flag_arr, const char* args_arr);
 int update_flag_str(char*, int *str_flag_arr, const char str_args_arr[LEN_STR_ARGS_ARR][MAX_DIR_NAME_SEQ_LEN]);
 void get_cwd(char *cwd_arr);
 int get_directories(struct directory*, DIR*);
 void print_help();
-void create_dir(struct directory, char*);
+void create_dir(struct directory, char*, int *num_dirs);
 
 int main(int argc, char **argv) {
     // array with all single character flags
@@ -64,6 +65,8 @@ int main(int argc, char **argv) {
     char given_dir_name[MAX_DIR_NAME_LEN];
     // found arguments inside name_arr
     bool name_args_found = false;
+    // number of folders to be created
+    int num_folders = 1;
 
     // get the current working directory
     get_cwd(cwd_arr);
@@ -77,7 +80,7 @@ int main(int argc, char **argv) {
 
     // set the flags
     // if (set_flags(argc, argv, flag_arr, args_arr)) {
-    if (arg_handler(argc, argv, flag_arr, str_flag_arr, args_arr, str_args_arr, name_arr)) {
+    if (arg_handler(argc, argv, flag_arr, str_flag_arr, args_arr, str_args_arr, &num_folders, name_arr)) {
         // Something went wrong - abort
         printf("Error with args - aborted\n");
         return -1;
@@ -119,7 +122,7 @@ int main(int argc, char **argv) {
             }
         }
         // create additional directory with given parameters
-        create_dir(considered_directories[con_dir_occ_index], cwd_arr);
+        create_dir(considered_directories[con_dir_occ_index], cwd_arr, &num_folders);
     } else {
         // directory name given as arg
         // get directory name and append an underscore to the given name
@@ -130,7 +133,7 @@ int main(int argc, char **argv) {
         for (int i = 0; i < considered_directories_index; i++) {
             if (strcmp(considered_directories[i].name, given_dir_name) == 0) {
                 // there exists a directory with given name -> create
-                create_dir(considered_directories[i], cwd_arr);
+                create_dir(considered_directories[i], cwd_arr, &num_folders);
                 dir_found = true;
                 break;
             }
@@ -147,7 +150,7 @@ int main(int argc, char **argv) {
             // update the next free slot in the array
             considered_directories_index++;
             // creating the directory
-            create_dir(considered_directories[considered_directories_index-1], cwd_arr);
+            create_dir(considered_directories[considered_directories_index-1], cwd_arr, &num_folders);
         }
     }
 
@@ -160,12 +163,13 @@ int main(int argc, char **argv) {
 }
 
 int arg_handler(int argc, char **argv, int *flag_arr, int *str_flag_arr, const char *args_arr,
-                const char str_args_arr[LEN_STR_ARGS_ARR][MAX_DIR_NAME_SEQ_LEN],
+                const char str_args_arr[LEN_STR_ARGS_ARR][MAX_DIR_NAME_SEQ_LEN], int *num_folders,
                 char name_arr[NUM_NAME_ARG][MAX_DIR_NAME_SEQ_LEN])
 /*
  * This function sets all flags given by the command line arguments
  * and are in the arguments array 'args_arr' in the flag array 'flag_arr'.
  * Throws an error if an unknown flag occurred.
+ * Command line arguments which are not flags will be processed accordingly.
  */
 {
     // indicator for an upcoming flag
@@ -178,6 +182,8 @@ int arg_handler(int argc, char **argv, int *flag_arr, int *str_flag_arr, const c
     char arg_buffer[MAX_DIR_NAME_SEQ_LEN] = {};
     // next free index in 'arg_buffer'
     int arg_buffer_index = 0;
+    // indicator that the upcoming characters will be a number
+    bool check_num_folder = false;
 
     // go through the command line args
     // -> skipping the first argument because it contains the command itself
@@ -185,6 +191,9 @@ int arg_handler(int argc, char **argv, int *flag_arr, int *str_flag_arr, const c
         // stop when the end is reached
         if (argv[i] == NULL)
             break;
+
+        if (isdigit(argv[i][0]))
+            check_num_folder = true;
 
         // go through the string
         for (int j = 0; argv[i][j] != '\0'; j++) {
@@ -234,16 +243,22 @@ int arg_handler(int argc, char **argv, int *flag_arr, int *str_flag_arr, const c
             }
         } else if (arg_buffer_index > 0) {
             // ... when it is an argument
-            // NOTE: when 'name_arr' gets multiple strings, this has to be rewritten
-            // check if there is already something in 'name_arr'
-            if (strcmp(name_arr[0], "\0") != 0) {
-                return 1;
+            if (check_num_folder) {
+                *num_folders = atoi(arg_buffer);
+            } else {
+                // NOTE: when 'name_arr' gets multiple strings, this has to be rewritten
+                // check if there is already something in 'name_arr'
+                if (strcmp(name_arr[0], "\0") != 0) {
+                    return 1;
+                }
+                // HELP INFO: if flag set -> copy arg_buffer + set flag
+                // save argument
+                strcpy(name_arr[0], arg_buffer);
             }
-
-            // HELP INFO: if flag set -> copy arg_buffer + set flag
-            // save argument
-            strcpy(name_arr[0], arg_buffer);
         }
+
+        // handle number in 'num_folder_buffer'
+
 
         // --- check for wrong argument parsing
         // dash counter is 1 and there was no character parsed to 'update_flag()' (parsing '-' only)
@@ -258,6 +273,8 @@ int arg_handler(int argc, char **argv, int *flag_arr, int *str_flag_arr, const c
         // reset flag indicator and counter
         is_flag = false;
         flag_dash_count = 0;
+        // reset number indicator
+        check_num_folder = false;
         // reset argument buffer and its index
         memset(arg_buffer,0,MAX_DIR_NAME_SEQ_LEN);
         arg_buffer_index = 0;
@@ -505,7 +522,7 @@ void print_help()
     printf("To get this help statement displayed use the argument '-h'.\n\n\n");
 }
 
-void create_dir(struct directory dir, char *cwd_arr)
+void create_dir(struct directory dir, char *cwd_arr, int *num_dirs)
 /*
  * Puts directory name and path together and creates the directory.
  * If an error while creating occurs, the program exits with status -1.
@@ -520,33 +537,38 @@ void create_dir(struct directory dir, char *cwd_arr)
     // digit length of the new number
     int new_number_str_len = 0;
 
-    // --- cast the new number to string and calculate its digit length
-    // cast new directory number to string
-    sprintf(new_number_str, "%i", new_number);
-    // get the digit length of the new number
-    new_number_str_len = (int)strlen(new_number_str);
-    // ---
+    for (int i = 0; i < *num_dirs; i++) {
+        // --- cast the new number to string and calculate its digit length
+        // cast new directory number to string
+        sprintf(new_number_str, "%i", new_number);
+        // get the digit length of the new number
+        new_number_str_len = (int) strlen(new_number_str);
+        // ---
 
-    // --- put the directory name together
-    // paste current path
-    strcpy(path_dir_name, cwd_arr);
-    // paste a missing slash for completeness
-    strcat(path_dir_name, "/");
-    // paste the given directory name
-    strcat(path_dir_name, dir.name);
-    // paste the given amount of zeros between the underscore and the number
-    for (int i = 0; i < (dir.num_digits - new_number_str_len); i++)
-        strcat(path_dir_name, "0");
-    // paste the new directory number
-    strcat(path_dir_name, new_number_str);
-    // ---
+        // --- put the directory name together
+        // paste current path
+        strcpy(path_dir_name, cwd_arr);
+        // paste a missing slash for completeness
+        strcat(path_dir_name, "/");
+        // paste the given directory name
+        strcat(path_dir_name, dir.name);
+        // paste the given amount of zeros between the underscore and the number
+        for (int i = 0; i < (dir.num_digits - new_number_str_len); i++)
+            strcat(path_dir_name, "0");
+        // paste the new directory number
+        strcat(path_dir_name, new_number_str);
+        // ---
 
-    // print the finished directory path + name
-    printf("Creating directory %s\n", path_dir_name);
-    // create directory
-    if (mkdir(path_dir_name, 0700) == -1) {
-        // something bad happened
-        printf("ERROR while creating directory.\n\n");
-        exit(-1);
+        // print the finished directory path + name
+        printf("Creating directory %s\n", path_dir_name);
+        // create directory
+        if (mkdir(path_dir_name, 0700) == -1) {
+            // something bad happened
+            printf("ERROR while creating directory.\n\n");
+            exit(-1);
+        }
+
+        // increment the current new number
+        new_number++;
     }
 }

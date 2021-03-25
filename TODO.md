@@ -36,7 +36,7 @@ The TODOs of the released versions will be moved to the
 
 ### Features:
 
-- [ ] Argument `[Number]`<br>
+- [X] Argument `[Number]`<br>
     A Number can be added to args which tells the program how many directories should be made.<br>
     e.g. `cdir test 10`
 
