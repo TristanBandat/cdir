@@ -35,7 +35,23 @@ The TODOs of the released versions will be moved to the
     A Number can be added to args which tells the program how many directories should be made.<br>
     e.g. `cdir test 10`
 
-### Status: `dev`
+### Status: `READY`
+
+---
+
+## Version 1.1.1
+
+
+
+### Bugfixes:
+
+
+
+### Features:
+
+
+
+### Status: `not started`
 
 ---
 
