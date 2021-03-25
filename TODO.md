@@ -19,10 +19,7 @@ The TODOs of the released versions will be moved to the
 - [ ] Code Cleanup (Python)<br>
     Implement data structure as used in the C version.
 
-- [ ] Measure execution times of both versions under static circumstances.<br>
-    Show the results in the [README][readme-url] but also this measurement
-    code should stay in the codebase as an additional printable information
-    for `verbose` (see below).
+
 
 - [X] Convert TODO to Markdown file
 
@@ -40,10 +37,6 @@ The TODOs of the released versions will be moved to the
     A Number can be added to args which tells the program how many directories should be made.<br>
     e.g. `cdir test 10`
 
-- [ ] Argument `-v` changes to `--verbose`<br>
-    Displays directories which have the correct formatting.
-    Shows occurrences of directories, and their numbering as well.
-
 ### Status: `dev`
 
 ---
@@ -55,6 +48,15 @@ The TODOs of the released versions will be moved to the
 ---
 
 ## Additional Features
+
+- [ ] Argument `-v` changes to `--verbose`<br>
+  Displays directories which have the correct formatting.
+  Shows occurrences of directories, and their numbering as well.
+
+- [ ] Measure execution times of both versions under static circumstances.<br>
+  Show the results in the [README][readme-url] but also this measurement
+  code should stay in the codebase as an additional printable information
+  for `verbose` (see above).
 
 - [ ] Argument `-s`<br>
     CDIR should add numbering at the beginning.
