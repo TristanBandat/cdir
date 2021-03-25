@@ -28,7 +28,7 @@
     ·
     <a href="https://github.com/TristanBandat/cdir/issues">Request Feature</a>
   </p>
-</p>
+<!-- </p> -->
 
 
 
@@ -161,6 +161,15 @@ the next available number:
    ```
 
 _Note:_ _If the directory with given name does not exist, the numbering will start at 0._
+
+If the function gets a directory name and a number as argument, the function will, additionally to the folder detection,
+create as many directories in consecutive numbering as specified.<br>
+For example if you want to create 10 folders with the name 'Exercise' just type:
+
+   ```sh
+   ~/Folder/% cdir Exercise 10
+   ```
+
 
 ### Flags
 
