@@ -16,10 +16,8 @@ The TODOs of the released versions will be moved to the
 - [X] Manual argument handling (C)<br>
     Therefore string args will be possible.
 
-- [ ] Code Cleanup (Python)<br>
+- [X] Code Cleanup (Python)<br>
     Implement data structure as used in the C version.
-
-
 
 - [X] Convert TODO to Markdown file
 
