@@ -3,7 +3,7 @@ import re
 import sys
 
 # current version of the project
-VERSION = '1.0.5'
+VERSION = '1.1.0'
 
 
 def get_dir_name(dir_names):

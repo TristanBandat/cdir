@@ -7,7 +7,7 @@
 #include <sys/stat.h>
 #include <ctype.h>
 
-#define VERSION "1.0.5"             // current version of the project
+#define VERSION "1.1.0"             // current version of the project
 #define LEN_FLAG_ARR 3              // number of flags
 #define LEN_ARGS_ARR LEN_FLAG_ARR   // use this name for all use cases where you don't refer directly to the flag array
 #define MAX_PATH_LEN 1024           // max. path length of cwd
